@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% load tz %}
+{% load static wagtailcore_tags %}
+
+{% block body_class %}template-event{% endblock %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ event.title }}</h1>
+
+    <p class="font-weight-bold mb-2">
+        {% if event.start_date %}
+            {{ event.start_date | timezone:"US/Pacific" | date:"F d, Y, f A" }}
+        {% endif %}
+
+        {% if event.end_date %}
+            {{ event.end_date | timezone:"US/Pacific" | date:"F d, Y, f A" }}
+        {% endif %}
+
+        US/Pacific
+    </p>
+
+    {% if event.sponsors %}
+        <dt class="col-sm-2">Sponsor(s):</dt>
+        <dd class="col-sm-10">
+            {% for sponsor in event.sponsors.all %}
+                {% if sponsor.sponsor.live %}
+                    <a href="{% pageurl sponsor.sponsor %}">
+                        {{ sponsor.sponsor }}</a>{% if not forloop.last %},{% endif %}
+                {% else %}
+                    {{ sponsor.sponsor }}{% if not forloop.last %},{% endif %}
+                {% endif %}
+            {% endfor %}
+        </dd>
+    {% endif %}
+
+
+    {% if event.body %}
+        {{ event.body }}
+    {% endif %}
+
+    {% if event.website %}
+        <a
+            href="{{ event.specific.website }}"
+            class="btn btn-primary btn-sm"
+            target="blank"
+        >
+            <i class="bi bi-link" aria-hidden="true"></i>
+            Visit event website
+        </a>
+    {% endif %}
+{% endblock %}
